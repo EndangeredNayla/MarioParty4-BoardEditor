@@ -1,0 +1,5 @@
+*.DS_Store
+*.spec
+build/
+*.bin
+.tmp/*
