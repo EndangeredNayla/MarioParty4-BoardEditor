@@ -115,7 +115,7 @@ class Space:
     def __init__(self):
         self.position = [0.0, 0.0, 0.0]
         self.special = 0
-        self.scale = [1.0, 1.0, 1.0]
+        self.scale = [0.85, 0.85, 0.85]
         self.rotation = [0.0, 0.0, 0.0]
         self.space_type = 0
         self.next_space_ids = []
@@ -166,7 +166,7 @@ class Space:
         else:
             print("Error: Texture is None")
         while len(self.lines) != len(self.next_space_ids):
-            self.lines.append(Entity(parent=camera.ui, model='line', origin_x=-.5))
+            self.lines.append(Entity(parent=camera.ui, model='line', origin_x=-.4))
         self.dragger.bruhsus = self
 
     def drag_update(self):
@@ -205,11 +205,16 @@ else:
             x = Space()
             x.read()
             spaces.append(x)
-app = Ursina()
+app = Ursina(title="MP4 Board Editor")
 window.fps_counter.enabled = False
 window.collider_counter.enabled = False
 window.cog_button.enabled = False
 window.entity_counter.enabled = False
+window.exit_button.enabled = False
+window.borderless = False
+window.fullscreen = False
+window.size = (800, 800)
+camera.position = (0, -30, 0)
 t = Text(scale=1, origin=(0,0), background=False)
 print(os.getcwd())
 textures = [
