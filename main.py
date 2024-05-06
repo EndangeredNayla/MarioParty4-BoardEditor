@@ -15,6 +15,25 @@ import subprocess
 import shutil
 import math
 import tempfile
+import sys
+import os
+
+# Determine if the script is frozen
+frozen = getattr(sys, 'frozen', False)
+
+# If the script is frozen, use the appropriate file path
+if frozen:
+    # Get the path to the bundled files
+    bundle_dir = sys._MEIPASS
+    # Modify your file paths accordingly
+    bindump_path = os.path.join(bundle_dir, "dependencies", "bindump.exe")
+    binpack_path = os.path.join(bundle_dir, "dependencies", "binpack.exe")
+    assets_dir = os.path.join(bundle_dir, "assets")
+else:
+    # Use the regular file paths
+    bindump_path = "dependencies/bindump.exe"
+    binpack_path = "dependencies/binpack.exe"
+    assets_dir = "assets"
 
 fname = filedialog.askopenfilename(title="Select a world file", defaultextension=".bin", filetypes = [("RAW Board File", "*.bin"), ("Extracted Board File", "*.dat")])
 dot_index = fname.find('.')
@@ -29,9 +48,9 @@ if "bin" in fileName:
     #if os.path.exists("tmp/" + fileName[:-4] + "_file0.dat"):
     #    pass
     if os.name != 'nt': #elif
-        subprocess.run(["wine", "dependencies/bindump.exe", ".tmp" + "/" + fileName])
+        subprocess.run(["wine", bindump_path, ".tmp" + "/" + fileName])
     else:
-        subprocess.run(["dependencies/bindump.exe", ".tmp" + "/" + fileName])
+        subprocess.run([bindump_path, ".tmp" + "/" + fileName])
         
 
 def random_space():
@@ -194,18 +213,18 @@ window.entity_counter.enabled = False
 t = Text(scale=1, origin=(0,0), background=False)
 print(os.getcwd())
 textures = [
-    loader.loadTexture("assets/Empty.png"),
-    loader.loadTexture("assets/Blue.png"),
-    loader.loadTexture("assets/Red.png"),
-    loader.loadTexture("assets/Bowser.png"),
-    loader.loadTexture("assets/Mushroom.png"),
-    loader.loadTexture("assets/Battle.png"),
-    loader.loadTexture("assets/Happening.png"),
-    loader.loadTexture("assets/Chance.png"),
-    loader.loadTexture("assets/Star.png"),
-    loader.loadTexture("assets/Warp.png"),
-    loader.loadTexture("assets/Fire.png"),
-    loader.loadTexture("assets/Unknown.png")
+    loader.loadTexture(assets_dir + "/Empty.png"),
+    loader.loadTexture(assets_dir + "/Blue.png"),
+    loader.loadTexture(assets_dir + "/Red.png"),
+    loader.loadTexture(assets_dir + "/Bowser.png"),
+    loader.loadTexture(assets_dir + "/Mushroom.png"),
+    loader.loadTexture(assets_dir + "/Battle.png"),
+    loader.loadTexture(assets_dir + "/Happening.png"),
+    loader.loadTexture(assets_dir + "/Chance.png"),
+    loader.loadTexture(assets_dir + "/Star.png"),
+    loader.loadTexture(assets_dir + "/Warp.png"),
+    loader.loadTexture(assets_dir + "/Fire.png"),
+    loader.loadTexture(assets_dir + "/Unknown.png")
 ]
 print("Textures loaded successfully:", textures)
 
@@ -252,9 +271,9 @@ def input(key):
                 x.write()
             os.makedirs(".tmp/out", exist_ok=True)
             if os.name != 'nt':
-                subprocess.run(["wine", "dependencies/binpack.exe", ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+                subprocess.run(["wine", bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
             else:
-                subprocess.run(["dependencies/binpack.exe", ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+                subprocess.run([bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
             file_path = filedialog.asksaveasfilename(defaultextension=".bin", filetypes=[("RAW Board File", "*.bin")])
             shutil.copy(".tmp/out" + fileName, file_path)
     if key == "r":
