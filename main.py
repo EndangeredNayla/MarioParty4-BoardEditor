@@ -16,23 +16,22 @@ import shutil
 import math
 import tempfile
 
-tmppath = tempfile.gettempdir()
 fname = filedialog.askopenfilename(title="Select a world file", defaultextension=".bin", filetypes = [("RAW Board File", "*.bin"), ("Extracted Board File", "*.dat")])
 dot_index = fname.find('.')
 fileName = os.path.basename(fname)
 if dot_index != -1:
     fileExt = fileName[dot_index + 1:]
 if "bin" in fileName:
-    os.makedirs(tmppath, exist_ok=True)
-    os.chdir(tmppath)
+    os.makedirs(".tmp", exist_ok=True)
+    os.chdir(".tmp")
     shutil.copy(fname, fileName)
     os.chdir("..")
     #if os.path.exists("tmp/" + fileName[:-4] + "_file0.dat"):
     #    pass
     if os.name != 'nt': #elif
-        subprocess.run(["wine", "dependencies/bindump.exe", tmppath + "/" + fileName])
+        subprocess.run(["wine", "dependencies/bindump.exe", ".tmp" + "/" + fileName])
     else:
-        subprocess.run(["dependencies/bindump.exe", tmppath + "/" + fileName])
+        subprocess.run(["dependencies/bindump.exe", ".tmp" + "/" + fileName])
         
 
 def random_space():
@@ -172,7 +171,7 @@ class Space:
         return x
 global file
 if "_file0" not in fileName:
-    with open(tmppath + "/" + fileName[:-4] + "_file0.dat", 'rb') as f:
+    with open(".tmp" + "/" + fileName[:-4] + "_file0.dat", 'rb') as f:
         file = f
         length = read_uint()
         for i in range(length):
@@ -180,7 +179,7 @@ if "_file0" not in fileName:
             x.read()
             spaces.append(x)
 else:
-    with open(tmppath + "/" + fileName[:-4] + ".dat", 'rb') as f:
+    with open(".tmp" + "/" + fileName[:-4] + ".dat", 'rb') as f:
         file = f
         length = read_uint()
         for i in range(length):
@@ -246,16 +245,16 @@ def input(key):
                 old_space.next_space_ids = []
     if key == "s":
         global file
-        with open(tmppath + "/" + fileName[:-4] + "_file0.dat", "wb") as w:
+        with open(".tmp" + "/" + fileName[:-4] + "_file0.dat", "wb") as w:
             file = w
             write_uint(len(spaces))
             for x in spaces:
                 x.write()
             os.makedirs(".tmp/out", exist_ok=True)
             if os.name != 'nt':
-                subprocess.run(["wine", "dependencies/binpack.exe", tmppath + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+                subprocess.run(["wine", "dependencies/binpack.exe", ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
             else:
-                subprocess.run(["dependencies/binpack.exe", tmppath + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+                subprocess.run(["dependencies/binpack.exe", ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
             file_path = filedialog.asksaveasfilename(defaultextension=".bin", filetypes=[("RAW Board File", "*.bin")])
             shutil.copy(".tmp/out" + fileName, file_path)
     if key == "r":
