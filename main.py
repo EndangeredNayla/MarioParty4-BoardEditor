@@ -52,6 +52,13 @@ if "bin" in fileName:
     else:
         subprocess.run([bindump_path, ".tmp" + "/" + fileName])
         
+# Create a variable to keep track of the y-position for scrolling
+scroll_y = 0
+
+# Function to update the position of UI elements based on scroll_y
+def update_scroll():
+    for x in spaces:
+        x.dragger.setY(x.dragger.getY() + scroll_y * 0.1)
 
 def random_space():
     x = random.randint(0, 1000)
@@ -214,7 +221,6 @@ window.exit_button.enabled = False
 window.borderless = False
 window.fullscreen = False
 window.size = (800, 800)
-camera.position = (0, -30, 0)
 t = Text(scale=1, origin=(0,0), background=False)
 print(os.getcwd())
 textures = [
@@ -243,6 +249,12 @@ def update():
             t.text = str(mouse.hovered_entity.bruhsus)
     for x in spaces:
         x.drag_update()
+    global scroll_y
+    if held_keys['scroll up']:
+        scroll_y += 1
+    elif held_keys['scroll down']:
+        scroll_y -= 1
+    update_scroll()
 
 def input(key):
     if key == 'q':
@@ -256,7 +268,7 @@ def input(key):
             if str(mouse.hovered_entity) == "draggable":
                 old_space = mouse.hovered_entity.bruhsus
                 new_space = Space()
-                new_space.copy_attributes(old_space)
+            new_space.copy_attributes(old_space)
                 spaces.append(new_space)
                 old_space.next_space_ids.append(len(spaces) - 1)
                 new_space.ui_setup()
@@ -275,10 +287,13 @@ def input(key):
             for x in spaces:
                 x.write()
             os.makedirs(".tmp/out", exist_ok=True)
-            if os.name != 'nt':
-                subprocess.run(["wine", bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
-            else:
-                subprocess.run([bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+            try:
+                if os.name != 'nt':
+                    subprocess.run(["wine", bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out/" + fileName])
+                else:
+                    subprocess.run([bindump_path, ".tmp" + "/" + fileName[:-4] + ".txt", ".tmp/out" + fileName])
+            except:
+                pass # to prevent a crash
             file_path = filedialog.asksaveasfilename(defaultextension=".bin", filetypes=[("RAW Board File", "*.bin")])
             shutil.copy(".tmp/out" + fileName, file_path)
     if key == "r":
