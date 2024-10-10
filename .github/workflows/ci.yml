@@ -19,7 +19,7 @@ jobs:
       run: pyinstaller --onefile .\main.py --name="MP4 Board Editor" --add-data "assets/*;assets/" --add-data "dependencies/*;dependencies/" -w --icon="assets/diceBlock.ico"
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: MarioParty4-BoardEditor-win32
         path: D:\a\MarioParty4-BoardEditor\MarioParty4-BoardEditor\dist
