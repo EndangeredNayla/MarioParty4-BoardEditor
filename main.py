@@ -268,7 +268,7 @@ def input(key):
             if str(mouse.hovered_entity) == "draggable":
                 old_space = mouse.hovered_entity.bruhsus
                 new_space = Space()
-            new_space.copy_attributes(old_space)
+                new_space.copy_attributes(old_space)
                 spaces.append(new_space)
                 old_space.next_space_ids.append(len(spaces) - 1)
                 new_space.ui_setup()
